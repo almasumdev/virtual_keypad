@@ -701,6 +701,28 @@ This controls content only. The key's background, size, tap handling, repeat,
 D-pad focus and accessibility stay with the package, so a builder cannot break
 the keyboard's behaviour.
 
+### Scramble the digits for PIN entry
+
+A fixed keypad leaks the PIN to anyone watching the hand, or to a camera above
+the terminal, because finger positions are enough on their own:
+
+```dart
+VirtualKeypad(
+  type: KeyboardType.number,
+  keyShuffle: KeyShuffle.onShow,     // reshuffle each time it appears
+)
+```
+
+`KeyShuffle.onShow` is what payment terminals do: positions hold still while
+someone is typing, so entry stays usable, but nothing carries from one entry to
+the next. `KeyShuffle.onEveryKey` reshuffles after every press for maximum
+resistance, at a real cost to usability. Default is `KeyShuffle.none`.
+
+Only single digits move. Backspace, the decimal point and every other key stay
+put, and the full set of digits is always on screen. `shuffleDigitKeys` is
+exported from `package:virtual_keypad/layouts.dart` if you want to apply the
+same permutation to a custom layout yourself.
+
 ### Multi-language and RTL
 
 ```dart

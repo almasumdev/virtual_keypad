@@ -1,3 +1,29 @@
+## 1.4.0
+
+Scramble the digits, for PIN and payment entry.
+
+### New
+
+- `VirtualKeypad.keyShuffle` rearranges the digit keys. A fixed keypad leaks a
+  PIN to anyone watching the hand or to a camera above the terminal, because
+  finger positions are enough on their own. `KeyShuffle.onShow` reshuffles each
+  time the keypad appears, which is what payment terminals do: positions hold
+  still while someone is typing, so entry stays usable, but nothing carries from
+  one entry to the next. `KeyShuffle.onEveryKey` reshuffles after every press,
+  for maximum resistance at a real cost to usability. The default is
+  `KeyShuffle.none`, so nothing changes unless you ask.
+- Only single digits move. Backspace, the decimal point and every other key stay
+  where they were, and the permutation is applied to a copy so the full set of
+  digits is always on screen; a shuffle can never drop or duplicate one.
+- `shuffleDigitKeys` is exported from `package:virtual_keypad/layouts.dart` for
+  applying the same permutation to a custom layout.
+
+### Fixed
+
+- The security policy said to "use the shuffled layouts" for shoulder surfing.
+  No such feature existed when that was written. It does now, and the policy
+  names the actual API.
+
 ## 1.3.0
 
 Draw a key yourself when a theme is not enough.

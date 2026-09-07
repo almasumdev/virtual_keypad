@@ -11,6 +11,7 @@ import '../emoji_font.dart';
 import '../enums.dart';
 import '../layouts/keyboard_language.dart';
 import '../layouts/keyboard_layout_provider.dart';
+import '../layouts/shuffle.dart';
 import '../models.dart';
 import '../scope.dart';
 import '../standalone_input_control.dart';
@@ -98,6 +99,7 @@ class VirtualKeypad extends StatefulWidget {
     this.animationDuration = const Duration(milliseconds: 200),
     this.animationCurve = Curves.easeInOut,
     this.keyBuilder,
+    this.keyShuffle = KeyShuffle.none,
   })  : assert(
           type != KeyboardType.custom || customLayout != null,
           'VirtualKeypad.customLayout is required when type is KeyboardType.custom.',
@@ -314,6 +316,17 @@ class VirtualKeypad extends StatefulWidget {
   /// cannot break the keyboard's behaviour.
   final VirtualKeypadKeyBuilder? keyBuilder;
 
+  /// When the digit keys change position, for PIN and payment entry.
+  ///
+  /// A fixed keypad leaks the PIN to anyone watching the hand or a camera
+  /// above the terminal, because finger positions are enough. Shuffling
+  /// removes that. Off by default, since it also costs the muscle memory a
+  /// regular user builds.
+  ///
+  /// Only single digits move. Backspace, the decimal point and every other key
+  /// stay put, and the full set of digits is always on screen.
+  final KeyShuffle keyShuffle;
+
   @override
   State<VirtualKeypad> createState() => _VirtualKeypadState();
 }
@@ -378,6 +391,7 @@ class _VirtualKeypadState extends State<VirtualKeypad> {
   @override
   void initState() {
     super.initState();
+    _reshuffle();
     KeyboardLayoutProvider.instance.addListener(_onLanguageChanged);
     _syncLanguageConfiguration();
     _resetLayoutStage();
@@ -506,6 +520,7 @@ class _VirtualKeypadState extends State<VirtualKeypad> {
       }
     }
 
+    _reshuffle();
     setState(() => _standaloneVisible = true);
     _onStandaloneFieldChanged();
   }
@@ -776,14 +791,43 @@ class _VirtualKeypadState extends State<VirtualKeypad> {
     final type = _effectiveKeyboardType;
 
     if (type == KeyboardType.custom && widget.customLayout != null) {
-      return widget.customLayout!;
+      return _applyShuffle(widget.customLayout!);
     }
 
     final inputType = _toInputType(type);
     final layoutSet = KeyboardLayoutProvider.instance.getLayouts(inputType);
 
-    return _decorateLayoutWithEmojiToggle(_getLayoutForStage(layoutSet));
+    return _applyShuffle(
+      _decorateLayoutWithEmojiToggle(_getLayoutForStage(layoutSet)),
+    );
   }
+
+  /// Applies [VirtualKeypad.keyShuffle] to [layout].
+  ///
+  /// The permutation is held in state rather than recomputed here, because
+  /// this getter runs on every build and a fresh shuffle per build would make
+  /// the digits move while the user is looking at them.
+  KeyboardLayout _applyShuffle(KeyboardLayout layout) {
+    if (widget.keyShuffle == KeyShuffle.none) return layout;
+    final seed = _shuffleSeed;
+    if (seed == null) return layout;
+    return shuffleDigitKeys(layout, random: Random(seed));
+  }
+
+  /// Seed for the current permutation, or null when nothing is shuffled.
+  int? _shuffleSeed;
+
+  /// Draws a new permutation. Called when the keypad appears, and after each
+  /// keypress under [KeyShuffle.onEveryKey].
+  void _reshuffle() {
+    if (widget.keyShuffle == KeyShuffle.none) {
+      _shuffleSeed = null;
+      return;
+    }
+    _shuffleSeed = _shuffleRandom.nextInt(1 << 32);
+  }
+
+  final Random _shuffleRandom = Random();
 
   bool get _supportsEmojiLayout {
     if (!widget.enableEmojiKey) return false;
@@ -1274,6 +1318,9 @@ class _VirtualKeypadState extends State<VirtualKeypad> {
 
   void _onKeyPressed(VirtualKey key) {
     _playKeyFeedback();
+    if (widget.keyShuffle == KeyShuffle.onEveryKey) {
+      _reshuffle();
+    }
     String? insertedText;
 
     if (key.isCharacter) {

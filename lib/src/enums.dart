@@ -158,3 +158,30 @@ enum KeyFeedback {
   /// Both a light vibration and the key click sound.
   both,
 }
+
+/// When the digit keys change position, for PIN and payment entry.
+///
+/// A fixed keypad is predictable: someone watching the hand, or a camera above
+/// the terminal, learns the PIN from finger positions alone. Shuffling the
+/// digits removes that, at the cost of the muscle memory a regular user builds.
+/// Off by default, because for most keyboards that trade is not worth it.
+///
+/// {@category Enums}
+enum KeyShuffle {
+  /// Digits keep their usual positions. The default.
+  none,
+
+  /// Digits are shuffled once each time the keypad becomes visible, so a
+  /// watcher cannot carry knowledge from one entry to the next.
+  ///
+  /// This is what payment terminals do. Positions hold still while the user is
+  /// typing, so entry stays usable.
+  onShow,
+
+  /// Digits are shuffled again after every keypress.
+  ///
+  /// Maximum resistance to shoulder surfing and to camera capture, and clearly
+  /// harder to use: the key a user is reaching for moves before they land on
+  /// it. Reserve it for high-value entry where that is an accepted cost.
+  onEveryKey,
+}

@@ -40,8 +40,10 @@ what it does with typed characters matters:
 
 Out of scope:
 
-- Shoulder surfing and camera capture. A fixed layout is predictable by design;
-  use the shuffled layouts if that is part of your threat model.
+- Shoulder surfing and camera capture against a fixed layout. That is what
+  `keyShuffle` is for: `KeyShuffle.onShow` reshuffles the digits each time the
+  keypad appears, and `KeyShuffle.onEveryKey` after every press. A keypad left
+  on the default `KeyShuffle.none` is predictable by design.
 - Hardware keyloggers and a compromised operating system, which sit below
   anything a widget can defend.
 - What your application does with the text after it is entered.
