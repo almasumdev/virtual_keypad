@@ -1,3 +1,18 @@
+## 1.5.0
+
+Reshuffle on demand, not only when the keypad appears.
+
+### New
+
+- `VirtualKeypad.shuffleTrigger` takes a `Listenable` and draws a fresh digit
+  arrangement each time it fires. `KeyShuffle.onShow` only reshuffles when the
+  keypad appears, which left no way to reshuffle during an entry: after a wrong
+  PIN the keypad is already on screen, and that is exactly the moment a watcher
+  has learned the most. Fire a `ChangeNotifier` to force a new arrangement.
+- Ignored when `keyShuffle` is `KeyShuffle.none`. Swapping the listenable moves
+  the subscription, and it is released when the keypad is disposed, so firing a
+  trigger afterwards is harmless. You own the listenable and its disposal.
+
 ## 1.4.0
 
 Scramble the digits, for PIN and payment entry.

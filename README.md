@@ -718,6 +718,16 @@ someone is typing, so entry stays usable, but nothing carries from one entry to
 the next. `KeyShuffle.onEveryKey` reshuffles after every press for maximum
 resistance, at a real cost to usability. Default is `KeyShuffle.none`.
 
+After a failed attempt the keypad is already on screen, which is exactly when a
+watcher has learned the most, so `shuffleTrigger` forces a fresh arrangement:
+
+```dart
+final reshuffle = ChangeNotifier();
+VirtualKeypad(keyShuffle: KeyShuffle.onShow, shuffleTrigger: reshuffle);
+// on a wrong PIN:
+reshuffle.notifyListeners();
+```
+
 Only single digits move. Backspace, the decimal point and every other key stay
 put, and the full set of digits is always on screen. `shuffleDigitKeys` is
 exported from `package:virtual_keypad/layouts.dart` if you want to apply the

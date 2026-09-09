@@ -100,6 +100,7 @@ class VirtualKeypad extends StatefulWidget {
     this.animationCurve = Curves.easeInOut,
     this.keyBuilder,
     this.keyShuffle = KeyShuffle.none,
+    this.shuffleTrigger,
   })  : assert(
           type != KeyboardType.custom || customLayout != null,
           'VirtualKeypad.customLayout is required when type is KeyboardType.custom.',
@@ -327,6 +328,24 @@ class VirtualKeypad extends StatefulWidget {
   /// stay put, and the full set of digits is always on screen.
   final KeyShuffle keyShuffle;
 
+  /// Draws a fresh digit arrangement each time this fires.
+  ///
+  /// [KeyShuffle.onShow] reshuffles when the keypad appears, which leaves no
+  /// way to reshuffle during an entry: after a wrong PIN the keypad is already
+  /// on screen, and that is exactly the moment a watcher has learned the most.
+  /// Fire a `ChangeNotifier` here to force a new arrangement.
+  ///
+  /// ```dart
+  /// final reshuffle = ChangeNotifier();
+  /// VirtualKeypad(keyShuffle: KeyShuffle.onShow, shuffleTrigger: reshuffle);
+  /// // on a failed attempt:
+  /// reshuffle.notifyListeners();
+  /// ```
+  ///
+  /// Ignored when [keyShuffle] is [KeyShuffle.none]. You own the listenable
+  /// and its disposal.
+  final Listenable? shuffleTrigger;
+
   @override
   State<VirtualKeypad> createState() => _VirtualKeypadState();
 }
@@ -392,6 +411,7 @@ class _VirtualKeypadState extends State<VirtualKeypad> {
   void initState() {
     super.initState();
     _reshuffle();
+    widget.shuffleTrigger?.addListener(_onShuffleTrigger);
     KeyboardLayoutProvider.instance.addListener(_onLanguageChanged);
     _syncLanguageConfiguration();
     _resetLayoutStage();
@@ -555,6 +575,10 @@ class _VirtualKeypadState extends State<VirtualKeypad> {
   @override
   void didUpdateWidget(VirtualKeypad oldWidget) {
     super.didUpdateWidget(oldWidget);
+    if (oldWidget.shuffleTrigger != widget.shuffleTrigger) {
+      oldWidget.shuffleTrigger?.removeListener(_onShuffleTrigger);
+      widget.shuffleTrigger?.addListener(_onShuffleTrigger);
+    }
     if (widget.availableLanguages != oldWidget.availableLanguages ||
         widget.initialLanguage != oldWidget.initialLanguage) {
       _syncLanguageConfiguration();
@@ -592,6 +616,7 @@ class _VirtualKeypadState extends State<VirtualKeypad> {
 
   @override
   void dispose() {
+    widget.shuffleTrigger?.removeListener(_onShuffleTrigger);
     KeyboardLayoutProvider.instance.removeListener(_onLanguageChanged);
     VirtualKeypadColorEmoji.isLoaded.removeListener(_onColorEmojiLoaded);
     if (identical(_dpadOwner, this)) {
@@ -816,6 +841,12 @@ class _VirtualKeypadState extends State<VirtualKeypad> {
 
   /// Seed for the current permutation, or null when nothing is shuffled.
   int? _shuffleSeed;
+
+  /// Redraws the arrangement when the caller's trigger fires.
+  void _onShuffleTrigger() {
+    if (widget.keyShuffle == KeyShuffle.none || !mounted) return;
+    setState(_reshuffle);
+  }
 
   /// Draws a new permutation. Called when the keypad appears, and after each
   /// keypress under [KeyShuffle.onEveryKey].
