@@ -14,7 +14,7 @@
 <link rel="icon" href="/logo.svg" type="image/svg+xml">
 <link rel="stylesheet" href="/style.503e9f0ddd.css">
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "headline": "Android TV and D-pad", "description": "Make an on-screen keyboard usable with nothing but a remote in Flutter, for Android TV, Fire TV and set-top boxes, including focus highlight styling.", "url": "https://virtual-keypad-docs.web.app/android-tv", "author": {"@type": "Person", "name": "Nurullah Al Masum"}, "about": {"@type": "SoftwareSourceCode", "name": "virtual_keypad", "programmingLanguage": "Dart", "codeRepository": "https://github.com/almasumdev/virtual_keypad"}}</script>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How do I make a Flutter keyboard work with a TV remote?", "acceptedAnswer": {"@type": "Answer", "text": "Set enableDpadNavigation: true. Arrow keys move a highlight between keys and select or enter presses the highlighted one."}}, {"@type": "Question", "name": "Why does space not press the highlighted key?", "acceptedAnswer": {"@type": "Answer", "text": "Because a Bluetooth keyboard paired to a TV is common, and space there should type a space. Select, enter and the primary gamepad button press the key."}}, {"@type": "Question", "name": "How do I style the D-pad focus highlight?", "acceptedAnswer": {"@type": "Answer", "text": "Use the theme's focusBorderColor, focusBorderWidth and focusColor. On a television, use a fill and an outline together so the highlight reads from across a room."}}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How do I make a Flutter keyboard work with a TV remote?", "acceptedAnswer": {"@type": "Answer", "text": "Set enableDpadNavigation: true. Arrow keys move a highlight between keys and select or enter presses the highlighted one."}}, {"@type": "Question", "name": "Can the emoji picker be used with a TV remote?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, from 1.6.0. With enableDpadNavigation on, the emoji page shows a grid the D-pad can drive, with a category strip along the top; arrows move, select inserts, and moving up twice leaves the page."}}, {"@type": "Question", "name": "Why does space not press the highlighted key?", "acceptedAnswer": {"@type": "Answer", "text": "Because a Bluetooth keyboard paired to a TV is common, and space there should type a space. Select, enter and the primary gamepad button press the key."}}, {"@type": "Question", "name": "How do I style the D-pad focus highlight?", "acceptedAnswer": {"@type": "Answer", "text": "Use the theme's focusBorderColor, focusBorderWidth and focusColor. On a television, use a fill and an outline together so the highlight reads from across a room."}}]}</script>
 </head>
 <body>
 <a class="skip" href="#content">Skip to content</a>
@@ -75,6 +75,10 @@
 )</code></pre></div>
 <p>Feedback fires for D-pad activation as well as taps, so the confirmation does not depend on how the key was reached.</p>
 
+<h2 id="the-emoji-page-too">The emoji page too<a class="anchor" href="#the-emoji-page-too" aria-label="Link to this section">#</a></h2>
+<p>With <code>enableDpadNavigation</code> on, the emoji page swaps its touch grid for one the remote can drive: a row of category icons across the top, the emoji below, arrows to move and select to insert. Moving up from the top row goes back to the categories, and up again closes the page and returns to the letters, so the user is never stranded somewhere the remote cannot leave.</p>
+<p>The grid is still tappable, so a device with both a touchscreen and a remote behaves the same way either side. Without <code>enableDpadNavigation</code> the usual touch picker is shown, unchanged.</p>
+
 <h2 id="only-one-keyboard-responds">Only one keyboard responds<a class="anchor" href="#only-one-keyboard-responds" aria-label="Link to this section">#</a></h2>
 <p>If two keypads are mounted at once, only the visible one consumes a D-pad press. Without that rule a hidden keyboard offscreen would silently eat the remote input and the visible one would appear frozen.</p>
 <nav class="next" aria-label="Related guides"><a href="/theming">Theming</a><a href="/standalone-mode">Use any TextField</a></nav>
@@ -87,7 +91,7 @@
     </article>
   </main>
 
-  <aside class="toc"><nav aria-labelledby="toc-h"><h2 id="toc-h">On this page</h2><ul><li><a href="#install">Install</a></li><li><a href="#turning-it-on">Turning it on</a></li><li><a href="#moving-between-rows">Moving between rows</a></li><li><a href="#two-decisions-worth-knowing-about">Two decisions worth knowing about</a></li><li><a href="#make-the-highlight-obvious">Make the highlight obvious</a></li><li><a href="#confirming-a-press-without-a-click">Confirming a press without a click</a></li><li><a href="#only-one-keyboard-responds">Only one keyboard responds</a></li></ul></nav></aside>
+  <aside class="toc"><nav aria-labelledby="toc-h"><h2 id="toc-h">On this page</h2><ul><li><a href="#install">Install</a></li><li><a href="#turning-it-on">Turning it on</a></li><li><a href="#moving-between-rows">Moving between rows</a></li><li><a href="#two-decisions-worth-knowing-about">Two decisions worth knowing about</a></li><li><a href="#make-the-highlight-obvious">Make the highlight obvious</a></li><li><a href="#confirming-a-press-without-a-click">Confirming a press without a click</a></li><li><a href="#the-emoji-page-too">The emoji page too</a></li><li><a href="#only-one-keyboard-responds">Only one keyboard responds</a></li></ul></nav></aside>
 </div>
 
 <script src="/docs.029eb910a1.js" defer></script>

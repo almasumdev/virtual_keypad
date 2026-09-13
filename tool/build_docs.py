@@ -655,11 +655,17 @@ VirtualKeypad(
 """) + """
 <p>Feedback fires for D-pad activation as well as taps, so the confirmation does not depend on how the key was reached.</p>
 
+<h2>The emoji page too</h2>
+<p>With <code>enableDpadNavigation</code> on, the emoji page swaps its touch grid for one the remote can drive: a row of category icons across the top, the emoji below, arrows to move and select to insert. Moving up from the top row goes back to the categories, and up again closes the page and returns to the letters, so the user is never stranded somewhere the remote cannot leave.</p>
+<p>The grid is still tappable, so a device with both a touchscreen and a remote behaves the same way either side. Without <code>enableDpadNavigation</code> the usual touch picker is shown, unchanged.</p>
+
 <h2>Only one keyboard responds</h2>
 <p>If two keypads are mounted at once, only the visible one consumes a D-pad press. Without that rule a hidden keyboard offscreen would silently eat the remote input and the visible one would appear frozen.</p>
 """ + nxt([("theming", "Theming"), ("standalone-mode", "Use any TextField")]),
     faq=[("How do I make a Flutter keyboard work with a TV remote?",
           "Set enableDpadNavigation: true. Arrow keys move a highlight between keys and select or enter presses the highlighted one."),
+         ("Can the emoji picker be used with a TV remote?",
+          "Yes, from 1.6.0. With enableDpadNavigation on, the emoji page shows a grid the D-pad can drive, with a category strip along the top; arrows move, select inserts, and moving up twice leaves the page."),
          ("Why does space not press the highlighted key?",
           "Because a Bluetooth keyboard paired to a TV is common, and space there should type a space. Select, enter and the primary gamepad button press the key."),
          ("How do I style the D-pad focus highlight?",
