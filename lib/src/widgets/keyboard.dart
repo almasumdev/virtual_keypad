@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 
 import '../controller.dart';
 import '../emoji_font.dart';
+import 'emoji_dpad_view.dart';
 import '../enums.dart';
 import '../layouts/keyboard_language.dart';
 import '../layouts/keyboard_layout_provider.dart';
@@ -375,6 +376,11 @@ class _VirtualKeypadState extends State<VirtualKeypad> {
   /// Set during build so the key handler navigates whatever the user can
   /// actually see, including custom layouts and symbol pages.
   KeyboardLayout? _dpadLayout;
+
+  /// The emoji grid's state while the D-pad view is showing, so key events can
+  /// be handed to it instead of to the key highlight.
+  final GlobalKey<EmojiDpadViewState> _emojiDpadKey =
+      GlobalKey<EmojiDpadViewState>();
 
   /// Whether the keyboard is currently on screen.
   ///
@@ -1071,6 +1077,22 @@ class _VirtualKeypadState extends State<VirtualKeypad> {
       height: widget.height,
       color: theme.backgroundColor,
       child: emoji_picker.EmojiPicker(
+        customWidget: _isEmojiDpadActive
+            ? (config, state, showSearchBar) => EmojiDpadView(
+                  key: _emojiDpadKey,
+                  categories: state.categoryEmoji,
+                  theme: theme,
+                  columns: _emojiColumnsForWidth(width),
+                  emojiSize: _emojiSize,
+                  emojiTextStyle: _effectiveEmojiTextStyle,
+                  height: widget.height,
+                  onEmojiSelected: (emoji) {
+                    _insertTextIntoTarget(emoji);
+                    _notifyEmojiSelection(emoji);
+                  },
+                  onLeaveTop: () => _handleAction(KeyAction.emoji),
+                )
+            : null,
         onEmojiSelected: (_, emoji) {
           _insertTextIntoTarget(emoji.emoji);
           _notifyEmojiSelection(emoji.emoji);
@@ -1230,6 +1252,16 @@ class _VirtualKeypadState extends State<VirtualKeypad> {
     _dpadCol = col;
   }
 
+  /// Whether the emoji page is showing its directional-pad view.
+  ///
+  /// Only when D-pad navigation is on, so the touch picker stays the default
+  /// and nothing changes for anyone not driving the keyboard with a remote.
+  bool get _isEmojiDpadActive =>
+      widget.enableDpadNavigation &&
+      identical(_dpadOwner, this) &&
+      _dpadVisible &&
+      _isEmojiPickerVisible;
+
   /// Whether the highlight should respond to D-pad events right now.
   bool get _dpadActive =>
       widget.enableDpadNavigation &&
@@ -1301,6 +1333,13 @@ class _VirtualKeypadState extends State<VirtualKeypad> {
 
   bool _handleDpadKey(KeyEvent event) {
     if (event is KeyUpEvent) return false;
+
+    // The emoji page has its own cursor, so while it is showing it takes the
+    // keys rather than the key highlight behind it.
+    if (_isEmojiDpadActive) {
+      return _emojiDpadKey.currentState?.handleKey(event) ?? false;
+    }
+
     if (!_dpadActive) return false;
 
     final key = event.logicalKey;

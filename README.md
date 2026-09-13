@@ -216,7 +216,6 @@ What ships next is driven by user requests on the
 [issue tracker](https://github.com/almasumdev/virtual_keypad/issues):
 
 - ⬜ More built-in languages and layouts (contributions welcome)
-- ⬜ D-pad navigation inside the emoji page
 
 Shipped milestones are in the
 [changelog](https://github.com/almasumdev/virtual_keypad/blob/main/CHANGELOG.md).
@@ -599,6 +598,15 @@ keyboard instead of trapping the user inside it.
 The highlight is drawn by the keyboard rather than by Flutter's focus system, so
 the text field keeps focus and the keyboard does not hide while the user moves
 around. Style it with `focusBorderColor`, `focusBorderWidth`, and `focusColor`.
+
+The emoji page follows the same rules. With `enableDpadNavigation` on it swaps
+its touch grid for one the remote can drive: a row of category icons across the
+top, the emoji below, arrow keys to move and select to insert. Moving up from
+the top row goes back to the categories, and up again closes the page and
+returns to the letters, so the user is never stranded somewhere the remote
+cannot leave. The grid stays tappable, so a device with both a touchscreen and
+a remote behaves the same way either side. Without `enableDpadNavigation` the
+usual touch picker is shown, unchanged.
 
 ### Key press feedback
 

@@ -1,3 +1,31 @@
+## 1.6.0
+
+The emoji page can be driven by a remote, which closes the last item the roadmap
+listed.
+
+### New
+
+- **D-pad navigation inside the emoji page.** With `enableDpadNavigation` on,
+  the emoji page swaps its touch grid for one a directional pad can drive: a
+  row of category icons across the top, the emoji below, arrow keys to move and
+  select, enter or the primary gamepad button to insert.
+- Moving up from the top row of the grid returns to the category strip, and up
+  again closes the page and goes back to the letters.
+
+### Fixed
+
+- **The emoji page ignored the remote entirely.** D-pad handling was switched
+  off whenever the emoji picker was showing, and the picker's own cells are not
+  focusable, so on a TV the page opened and nothing responded, with no way to
+  get back to the keyboard short of a touchscreen.
+
+### Notes
+
+The touch picker is still the default and is completely unchanged. The new view
+appears only when `enableDpadNavigation` is on, so nothing moves for anyone not
+driving the keyboard with a remote, and the new grid stays tappable for devices
+that have both.
+
 ## 1.5.0
 
 Reshuffle on demand, not only when the keypad appears.
