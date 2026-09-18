@@ -1,3 +1,25 @@
+## 1.7.0
+
+Two more built-in languages: Italian and Ukrainian.
+
+### New
+
+- **Italian (`it`)**: standard Italian QWERTY, with `à`, `è`, `é`, `ì`, `ò`
+  and `ù` on the accent page alongside the other Latin layouts.
+- **Ukrainian (`uk`)**: the standard Ukrainian ЙЦУКЕН rows, including `ї`,
+  `і` and `є`, with `ґ` and the apostrophe Ukrainian spelling uses inside words
+  on the accent page. Email and URL pages stay Latin, as they do for Russian.
+- Both are registered by `initializeKeyboardLayouts()`, which now sets up 14
+  languages.
+
+### Notes
+
+The tests check the parts that are easy to get wrong when a layout is derived
+from a neighbour: Italian carries no Spanish `ñ`, `¿` or `¡`, and Ukrainian
+carries none of the Russian-only letters `ы`, `э`, `ё` and `ъ`. If you type in
+either language and something does not match the keyboard you use every day,
+a pull request is very welcome.
+
 ## 1.6.0
 
 The emoji page can be driven by a remote, which closes the last item the roadmap

@@ -4,17 +4,17 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>A Multi-Language and RTL Virtual Keyboard in Flutter</title>
-<meta name="description" content="Switch a Flutter on-screen keyboard between 12 built-in languages including Arabic right to left, offer a language picker, and register a layout of your own.">
+<meta name="description" content="Switch a Flutter on-screen keyboard between 14 built-in languages including Arabic right to left, offer a language picker, and register a layout of your own.">
 <link rel="canonical" href="https://virtual-keypad-docs.web.app/languages-and-rtl">
 <meta property="og:type" content="article">
 <meta property="og:title" content="A Multi-Language and RTL Virtual Keyboard in Flutter">
-<meta property="og:description" content="Switch a Flutter on-screen keyboard between 12 built-in languages including Arabic right to left, offer a language picker, and register a layout of your own.">
+<meta property="og:description" content="Switch a Flutter on-screen keyboard between 14 built-in languages including Arabic right to left, offer a language picker, and register a layout of your own.">
 <meta property="og:url" content="https://virtual-keypad-docs.web.app/languages-and-rtl">
 <meta name="twitter:card" content="summary">
 <link rel="icon" href="/logo.svg" type="image/svg+xml">
 <link rel="stylesheet" href="/style.503e9f0ddd.css">
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "headline": "Languages and RTL", "description": "Switch a Flutter on-screen keyboard between 12 built-in languages including Arabic right to left, offer a language picker, and register a layout of your own.", "url": "https://virtual-keypad-docs.web.app/languages-and-rtl", "author": {"@type": "Person", "name": "Nurullah Al Masum"}, "about": {"@type": "SoftwareSourceCode", "name": "virtual_keypad", "programmingLanguage": "Dart", "codeRepository": "https://github.com/almasumdev/virtual_keypad"}}</script>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How do I add another language to the Flutter keyboard?", "acceptedAnswer": {"@type": "Answer", "text": "Call initializeKeyboardLayouts at startup for the 12 built-ins, then pass availableLanguages. For a language that is not built in, register a KeyboardLayoutSet under its code."}}, {"@type": "Question", "name": "Does the on-screen keyboard support Arabic and right to left?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. RTL layouts lay their keys out in the correct direction and work inside an LTR app without wrapping anything in a Directionality widget."}}, {"@type": "Question", "name": "Why does switching language do nothing?", "acceptedAnswer": {"@type": "Answer", "text": "initializeKeyboardLayouts was probably never called, so only English is registered. Call it once at startup before the keyboard is built."}}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "TechArticle", "headline": "Languages and RTL", "description": "Switch a Flutter on-screen keyboard between 14 built-in languages including Arabic right to left, offer a language picker, and register a layout of your own.", "url": "https://virtual-keypad-docs.web.app/languages-and-rtl", "author": {"@type": "Person", "name": "Nurullah Al Masum"}, "about": {"@type": "SoftwareSourceCode", "name": "virtual_keypad", "programmingLanguage": "Dart", "codeRepository": "https://github.com/almasumdev/virtual_keypad"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How do I add another language to the Flutter keyboard?", "acceptedAnswer": {"@type": "Answer", "text": "Call initializeKeyboardLayouts at startup for the 14 built-ins, then pass availableLanguages. For a language that is not built in, register a KeyboardLayoutSet under its code."}}, {"@type": "Question", "name": "Does the on-screen keyboard support Arabic and right to left?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. RTL layouts lay their keys out in the correct direction and work inside an LTR app without wrapping anything in a Directionality widget."}}, {"@type": "Question", "name": "Why does switching language do nothing?", "acceptedAnswer": {"@type": "Answer", "text": "initializeKeyboardLayouts was probably never called, so only English is registered. Call it once at startup before the keyboard is built."}}]}</script>
 </head>
 <body>
 <a class="skip" href="#content">Skip to content</a>
@@ -36,13 +36,13 @@
   <main class="content" id="content">
     <article>
       <h1>Languages and RTL</h1>
-      <p class="lede">Twelve layouts are built in, right to left included, and adding a thirteenth takes a map.</p>
+      <p class="lede">Fourteen layouts are built in, right to left included, and adding a fifteenth takes a map.</p>
       <h2 id="install">Install<a class="anchor" href="#install" aria-label="Link to this section">#</a></h2>
 <div class="codeblock"><pre><code>flutter pub add virtual_keypad</code></pre></div>
 <div class="codeblock"><pre><code>import 'package:virtual_keypad/virtual_keypad.dart';</code></pre></div>
 <h2 id="registering-the-built-in-layouts">Registering the built-in layouts<a class="anchor" href="#registering-the-built-in-layouts" aria-label="Link to this section">#</a></h2>
 <div class="codeblock"><pre><code>void main() {
-  initializeKeyboardLayouts();   // registers all 12 languages
+  initializeKeyboardLayouts();   // registers all 14 languages
   runApp(const MyApp());
 }</code></pre></div>
 <p>Call it once at startup. Without it the keyboard falls back to English, which is the most common reason a language switch appears to do nothing.</p>

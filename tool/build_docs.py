@@ -209,7 +209,7 @@ PAGES = []
 PAGES.append(dict(
     slug="index",
     title="virtual_keypad - On-Screen Virtual Keyboard Widget for Flutter",
-    desc="Open source Flutter package for an on-screen virtual keyboard and keypad. QWERTY, numeric, PIN, emoji and custom layouts in 12 languages, for kiosk, POS, TV and desktop apps.",
+    desc="Open source Flutter package for an on-screen virtual keyboard and keypad. QWERTY, numeric, PIN, emoji and custom layouts in 14 languages, for kiosk, POS, TV and desktop apps.",
     h1="An on-screen keyboard for Flutter",
     lede="A virtual keyboard widget you draw yourself, for the screens where the system keyboard will not do.",
     body=INSTALL + """
@@ -233,7 +233,7 @@ Column(
 <li>QWERTY, email, URL, number, phone and multiline layouts, picked from the field.</li>
 <li><a href="/numeric-keypad-pin">Numeric keypads and PIN pads</a> from a layout you define.</li>
 <li>A <a href="/floating-keyboard">draggable floating panel</a> that sits above the UI instead of taking a slice of it.</li>
-<li>12 languages including <a href="/languages-and-rtl">right to left</a>, with a long-press language picker on the space bar.</li>
+<li>14 languages including <a href="/languages-and-rtl">right to left</a>, with a long-press language picker on the space bar.</li>
 <li>An <a href="/emoji-keyboard">emoji page</a> with a bundled font, so it renders on a first offline web load.</li>
 <li><a href="/android-tv">D-pad navigation</a> for TV remotes and set-top boxes.</li>
 <li><a href="/theming">Theming</a> down to key colour, radius, text size and the focus highlight.</li>
@@ -878,14 +878,14 @@ print("defined theming")
 PAGES.append(dict(
     slug="languages-and-rtl",
     title="A Multi-Language and RTL Virtual Keyboard in Flutter",
-    desc="Switch a Flutter on-screen keyboard between 12 built-in languages including Arabic right to left, offer a language picker, and register a layout of your own.",
+    desc="Switch a Flutter on-screen keyboard between 14 built-in languages including Arabic right to left, offer a language picker, and register a layout of your own.",
     h1="Languages and RTL",
-    lede="Twelve layouts are built in, right to left included, and adding a thirteenth takes a map.",
+    lede="Fourteen layouts are built in, right to left included, and adding a fifteenth takes a map.",
     body=INSTALL + """
 <h2>Registering the built-in layouts</h2>
 """ + pre("""
 void main() {
-  initializeKeyboardLayouts();   // registers all 12 languages
+  initializeKeyboardLayouts();   // registers all 14 languages
   runApp(const MyApp());
 }
 """) + """
@@ -945,7 +945,7 @@ VirtualKey.character(text: 'a', capsText: 'A')
 <p>Without it a shifted key falls back to the uppercase form of its text, which is right for Latin scripts and wrong for any script where shift reaches a different character rather than a taller one.</p>
 """ + nxt([("custom-layouts", "Custom layouts"), ("emoji-keyboard", "Emoji")]),
     faq=[("How do I add another language to the Flutter keyboard?",
-          "Call initializeKeyboardLayouts at startup for the 12 built-ins, then pass availableLanguages. For a language that is not built in, register a KeyboardLayoutSet under its code."),
+          "Call initializeKeyboardLayouts at startup for the 14 built-ins, then pass availableLanguages. For a language that is not built in, register a KeyboardLayoutSet under its code."),
          ("Does the on-screen keyboard support Arabic and right to left?",
           "Yes. RTL layouts lay their keys out in the correct direction and work inside an LTR app without wrapping anything in a Directionality widget."),
          ("Why does switching language do nothing?",

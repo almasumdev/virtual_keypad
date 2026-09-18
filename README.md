@@ -24,7 +24,7 @@ kiosk and self-service terminals, ATM and point of sale (POS) screens,
 touchscreen and desktop apps, Android TV and set-top boxes driven by a D-pad
 remote, embedded displays, and secure PIN entry where you would rather the
 system keyboard stayed out of it. It drops into any standard `TextField` or
-`TextFormField` with one line, and it ships 12 languages including
+`TextFormField` with one line, and it ships 14 languages including
 right-to-left Arabic.
 
 > 📘 **[Documentation](https://virtual-keypad-docs.web.app)**: guides for
@@ -54,7 +54,7 @@ platform. There is no native code and no platform channel involved.
 - Add a virtual keyboard to any existing `TextField` or `TextFormField` by passing `standalone: true`, with no other changes to your form.
 - Build a numeric keypad, PIN pad, or OTP entry screen from your own key layout.
 - Float the keyboard in a draggable panel for desktop, kiosk, and split-view screens.
-- Switch between 12 built-in languages at runtime, or register your own layout.
+- Switch between 14 built-in languages at runtime, or register your own layout.
 - Block the system keyboard entirely when you need full control over input.
 
 <p align="center">
@@ -64,7 +64,7 @@ platform. There is no native code and no platform channel involved.
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/almasumdev/virtual_keypad/main/previews/showcase-languages.png"
-       alt="Six of the twelve built-in multilingual keyboard layouts: Bengali, Hindi Devanagari, Russian JCUKEN Cyrillic, Korean Dubeolsik Hangul, Thai Kedmanee, and French AZERTY" width="100%"/>
+       alt="Six of the fourteen built-in multilingual keyboard layouts: Bengali, Hindi Devanagari, Russian JCUKEN Cyrillic, Korean Dubeolsik Hangul, Thai Kedmanee, and French AZERTY" width="100%"/>
 </p>
 
 <p align="center">
@@ -138,7 +138,7 @@ Expand a group for the full list:
 <details>
 <summary><b>🌍 Languages &amp; scripts</b></summary>
 
-- 12 built-in languages registered by one call to `initializeKeyboardLayouts()`
+- 14 built-in languages registered by one call to `initializeKeyboardLayouts()`
 - Latin QWERTY, QWERTZ, and AZERTY layouts
 - Cyrillic (ЙЦУКЕН), Arabic, Bengali, Devanagari, Hangul, and Thai scripts
 - Right-to-left (RTL) input for Arabic
@@ -744,7 +744,7 @@ same permutation to a custom layout yourself.
 ### Multi-language and RTL
 
 ```dart
-initializeKeyboardLayouts(); // registers all 12 languages
+initializeKeyboardLayouts(); // registers all 14 languages
 
 KeyboardLayoutProvider.instance.setLanguage('ar'); // Arabic, RTL
 KeyboardLayoutProvider.instance.setLanguage('ko'); // Korean
@@ -811,7 +811,7 @@ Import only the surface you use:
 
 ## Supported languages
 
-All 12 are registered when you call `initializeKeyboardLayouts()`. Six of them
+All 14 are registered when you call `initializeKeyboardLayouts()`. Six of them
 are pictured in the [Overview](#overview).
 
 | Code | Language | Native name | Layout | Script | RTL |
@@ -823,11 +823,13 @@ are pictured in the [Overview](#overview).
 | `es` | Spanish | Español | QWERTY (ES) | Latin | |
 | `fr` | French | Français | AZERTY | Latin | |
 | `hi` | Hindi | हिन्दी | Devanagari | Devanagari | |
+| `it` | Italian | Italiano | QWERTY (IT) | Latin | |
 | `ko` | Korean | 한국어 | Dubeolsik (두벌식) | Hangul | |
 | `pt` | Portuguese | Português | QWERTY (PT) | Latin | |
 | `ru` | Russian | Русский | ЙЦУКЕН (JCUKEN) | Cyrillic | |
 | `th` | Thai | ไทย | Kedmanee | Thai | |
 | `tr` | Turkish | Türkçe | QWERTY (TR) | Latin | |
+| `uk` | Ukrainian | Українська | ЙЦУКЕН (JCUKEN) | Cyrillic | |
 
 > Spot a wrong character, a missing key, or a layout that does not match the real
 > thing for a language you speak? Please

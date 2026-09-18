@@ -1,6 +1,6 @@
 name: virtual_keypad
-description: "On-screen virtual keyboard widget and keypad for Flutter kiosk, POS, TV, desktop and touchscreen apps. Numeric, numpad, PIN, emoji, floating and custom layouts in 12 languages."
-version: 1.6.0
+description: "On-screen virtual keyboard widget and keypad for Flutter kiosk, POS, TV, desktop and touchscreen apps. Numeric, numpad, PIN, emoji, floating and custom layouts in 14 languages."
+version: 1.7.0
 homepage: https://github.com/almasumdev/virtual_keypad
 repository: https://github.com/almasumdev/virtual_keypad
 issue_tracker: https://github.com/almasumdev/virtual_keypad/issues
@@ -18,7 +18,7 @@ screenshots:
     path: images/logo.png
   - description: "Six keyboards side by side: wide email layout, color emoji page, dark PIN pad, QWERTY, Arabic right to left, and a themed numeric kiosk pad."
     path: previews/showcase-devices.png
-  - description: "Six of the 12 built-in languages: Bengali, Hindi, Russian, Korean, Thai, and French AZERTY."
+  - description: "Six of the 14 built-in languages: Bengali, Hindi, Russian, Korean, Thai, and French AZERTY."
     path: previews/showcase-languages.png
 
 environment:
