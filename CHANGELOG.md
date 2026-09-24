@@ -1,3 +1,25 @@
+## 1.8.0
+
+Two more built-in languages: Hebrew and Polish.
+
+### New
+
+- **Hebrew (`he`)**, the second right to left layout after Arabic. The standard
+  Hebrew rows, including the five final forms `ן ם ך ף ץ`, with the shekel and
+  Hebrew punctuation on the symbol pages. Email and URL pages stay Latin, since
+  addresses are.
+- **Polish (`pl`)**: Polish QWERTY with all nine of `ą ć ę ł ń ó ś ź ż` on the
+  accent page, and the zloty rather than the euro on the symbol page.
+- `initializeKeyboardLayouts()` now sets up 16 languages.
+
+### Notes
+
+Hebrew has no letter case, so shift leaves the letters alone; the key stays so
+the row matches every other layout, as it already does for Arabic. Its bottom
+row carries nine letters, so its shift and backspace take one unit each rather
+than one and a half, which is what keeps the row inside the grid. A widget test
+covers that, because at the wider setting the row overflowed.
+
 ## 1.7.0
 
 Two more built-in languages: Italian and Ukrainian.

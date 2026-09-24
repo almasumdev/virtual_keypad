@@ -7,9 +7,11 @@ import 'languages/bengali.dart';
 import 'languages/english.dart';
 import 'languages/french.dart';
 import 'languages/german.dart';
+import 'languages/hebrew.dart';
 import 'languages/hindi.dart';
 import 'languages/italian.dart';
 import 'languages/korean.dart';
+import 'languages/polish.dart';
 import 'languages/portuguese.dart';
 import 'languages/russian.dart';
 import 'languages/spanish.dart';
@@ -245,9 +247,9 @@ class KeyboardLayoutProvider {
 ///
 /// Call this at app startup to register built-in languages.
 /// Registers English ('en'), Arabic ('ar'), Bengali ('bn'), French ('fr'),
-/// German ('de'), Hindi ('hi'), Italian ('it'), Korean ('ko'),
-/// Portuguese ('pt'), Russian ('ru'), Spanish ('es'), Thai ('th'),
-/// Turkish ('tr'), and Ukrainian ('uk').
+/// German ('de'), Hebrew ('he'), Hindi ('hi'), Italian ('it'), Korean ('ko'),
+/// Polish ('pl'), Portuguese ('pt'), Russian ('ru'), Spanish ('es'),
+/// Thai ('th'), Turkish ('tr'), and Ukrainian ('uk').
 void initializeKeyboardLayouts() {
   final provider = KeyboardLayoutProvider.instance;
   provider.registerLanguage(englishLanguage);
@@ -255,9 +257,11 @@ void initializeKeyboardLayouts() {
   provider.registerLanguage(bengaliLanguage);
   provider.registerLanguage(frenchLanguage);
   provider.registerLanguage(germanLanguage);
+  provider.registerLanguage(hebrewLanguage);
   provider.registerLanguage(hindiLanguage);
   provider.registerLanguage(italianLanguage);
   provider.registerLanguage(koreanLanguage);
+  provider.registerLanguage(polishLanguage);
   provider.registerLanguage(portugueseLanguage);
   provider.registerLanguage(russianLanguage);
   provider.registerLanguage(spanishLanguage);

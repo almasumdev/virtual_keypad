@@ -18,8 +18,8 @@ void main() {
   group('Built-In Languages', () {
     test('every language registers under its own code', () {
       const codes = [
-        'ar', 'bn', 'de', 'en', 'es', 'fr', 'hi', 'it', //
-        'ko', 'pt', 'ru', 'th', 'tr', 'uk',
+        'ar', 'bn', 'de', 'en', 'es', 'fr', 'he', 'hi', //
+        'it', 'ko', 'pl', 'pt', 'ru', 'th', 'tr', 'uk',
       ];
       final provider = KeyboardLayoutProvider.instance;
       for (final code in codes) {
@@ -105,6 +105,84 @@ void main() {
     });
   });
 
+  group('Hebrew', () {
+    KeyboardLanguage hebrew() =>
+        KeyboardLayoutProvider.instance.getLanguage('he')!;
+
+    test('it is named in English and in Hebrew, and reads right to left', () {
+      expect(hebrew().name, 'Hebrew');
+      expect(hebrew().nativeName, 'עברית');
+      expect(hebrew().isRTL, isTrue);
+    });
+
+    test('the letter rows follow the standard Hebrew layout', () {
+      final rows = [
+        for (final row in hebrew().textLayouts.primary)
+          [
+            for (final key in row)
+              if (key.isCharacter) key.text!,
+          ].join(),
+      ];
+      expect(rows[0], 'קראטוןםפ');
+      expect(rows[1], 'שדגכעיחלךף');
+      expect(rows[2], 'זסבהנמצתץ');
+    });
+
+    test('the final forms Hebrew needs are all present', () {
+      final letters = _letters(hebrew().textLayouts.primary);
+      for (final f in ['ן', 'ם', 'ך', 'ף', 'ץ']) {
+        expect(letters, contains(f), reason: 'final form $f is missing');
+      }
+    });
+
+    test('no Latin accents are left over from the layout it was built on', () {
+      final all = [
+        ..._letters(hebrew().textLayouts.primary),
+        ..._letters(hebrew().textLayouts.tertiary!),
+      ];
+      for (final c in ['á', 'é', 'ñ', '¿']) {
+        expect(all, isNot(contains(c)));
+      }
+    });
+
+    test('email and URL pages stay Latin', () {
+      expect(_letters(hebrew().emailLayouts!.primary).take(10).join(),
+          'qwertyuiop');
+      expect(
+          _letters(hebrew().urlLayouts!.primary).take(10).join(), 'qwertyuiop');
+    });
+  });
+
+  group('Polish', () {
+    KeyboardLanguage polish() =>
+        KeyboardLayoutProvider.instance.getLanguage('pl')!;
+
+    test('it is named in English and in Polish', () {
+      expect(polish().name, 'Polish');
+      expect(polish().nativeName, 'Polski');
+      expect(polish().isRTL, isFalse);
+    });
+
+    test('the letter page is plain QWERTY', () {
+      final letters = _letters(polish().textLayouts.primary);
+      expect(letters.take(10).join(), 'qwertyuiop');
+      expect(letters, isNot(contains('ñ')));
+    });
+
+    test('all nine Polish letters are reachable', () {
+      final accents = _letters(polish().textLayouts.tertiary!);
+      for (final c in ['ą', 'ć', 'ę', 'ł', 'ń', 'ó', 'ś', 'ź', 'ż']) {
+        expect(accents, contains(c), reason: '$c is missing');
+      }
+    });
+
+    test('the currency key is the zloty, not the euro', () {
+      final symbols = _letters(polish().textLayouts.secondary!);
+      expect(symbols, contains('zł'));
+      expect(symbols, isNot(contains('€')));
+    });
+  });
+
   group('Switching To A New Language', () {
     testWidgets('the Ukrainian keyboard renders its letters', (tester) async {
       await tester.pumpWidget(
@@ -121,6 +199,23 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('ї'), findsOneWidget);
       expect(find.text('є'), findsOneWidget);
+    });
+
+    testWidgets('the Hebrew keyboard renders right to left', (tester) async {
+      await tester.pumpWidget(
+        const MaterialApp(
+          home: Scaffold(
+            body: VirtualKeypad(
+              type: KeyboardType.text,
+              initialLanguage: 'he',
+              availableLanguages: ['he'],
+            ),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(find.text('א'), findsOneWidget);
+      expect(find.text('ץ'), findsOneWidget);
     });
 
     testWidgets('the Italian keyboard renders its letters', (tester) async {
