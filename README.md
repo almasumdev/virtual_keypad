@@ -55,6 +55,7 @@ platform. There is no native code and no platform channel involved.
 - Build a numeric keypad, PIN pad, or OTP entry screen from your own key layout.
 - Float the keyboard in a draggable panel for desktop, kiosk, and split-view screens.
 - Switch between 16 built-in languages at runtime, or register your own layout.
+- Hold a letter for its accents (`à á â ä`), the way every mobile keyboard does.
 - Block the system keyboard entirely when you need full control over input.
 
 <p align="center">
@@ -837,6 +838,24 @@ are pictured in the [Overview](#overview).
 > thing for a language you speak? Please
 > [open a pull request](https://github.com/almasumdev/virtual_keypad/pulls).
 > Community fixes are very welcome.
+
+## Accents on a long press
+
+Holding a letter opens its alternates, which is where a phone keyboard keeps
+them:
+
+```dart
+VirtualKeypad(
+  type: KeyboardType.text,
+  // The default table covers the Latin layouts. Supply your own to change it,
+  // or an empty map to turn the popup off.
+  accents: const {'a': ['ā', 'ă']},
+)
+```
+
+The built-in table is `kLatinAccents`. Uppercase forms are derived when shift
+is on, so the map only ever holds lowercase keys, and holding space still opens
+the language picker.
 
 ## Common setup mistakes
 

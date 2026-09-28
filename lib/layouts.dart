@@ -17,4 +17,5 @@ library;
 export 'src/enums.dart';
 export 'src/layouts/shuffle.dart';
 export 'src/models.dart';
+export 'src/layouts/accents.dart';
 export 'src/layouts/layouts.dart';

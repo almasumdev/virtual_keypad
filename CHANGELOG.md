@@ -1,3 +1,28 @@
+## 1.9.0
+
+Accents move to where people expect them: a long press.
+
+### New
+
+- **Holding a letter opens its alternates.** `a` offers `à á â ä ã å ą æ`, and
+  so on across the Latin letters. Until now the accents were only on a
+  secondary page, which is not where any phone keyboard keeps them and is a
+  poor fit for a word that needs one mid-sentence.
+- **`VirtualKeypad.accents`** overrides the table. The default is
+  `kLatinAccents`, which is exported; pass your own map to change or extend it,
+  or an empty map to turn the popup off.
+- The alternates follow shift, so holding a letter with shift on offers the
+  uppercase forms. The table itself only holds lowercase keys.
+
+### Notes
+
+Holding space still opens the language picker, and holding backspace still
+repeats, so nothing that was already on a long press moved.
+
+The accent pages on the language layouts are untouched. They stay as they are
+for anyone using the keyboard without a long press, on a kiosk with a stylus or
+under D-pad control.
+
 ## 1.8.0
 
 Two more built-in languages: Hebrew and Polish.

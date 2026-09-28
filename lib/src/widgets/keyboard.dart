@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 
 import '../controller.dart';
 import '../emoji_font.dart';
+import '../layouts/accents.dart';
 import 'emoji_dpad_view.dart';
 import '../enums.dart';
 import '../layouts/keyboard_language.dart';
@@ -93,6 +94,7 @@ class VirtualKeypad extends StatefulWidget {
     this.emojiTextStyle,
     this.colorEmojiFontLoader,
     this.checkEmojiPlatformCompatibility = false,
+    this.accents,
     this.enableDpadNavigation = false,
     this.hideWhenUnfocused = false,
     this.standalone = false,
@@ -266,6 +268,15 @@ class VirtualKeypad extends StatefulWidget {
   /// Defaults to false, which leaves touch and pointer behaviour untouched.
   final bool enableDpadNavigation;
 
+  /// The alternates offered when a character key is held down, keyed by the
+  /// lowercase base letter.
+  ///
+  /// Defaults to [kLatinAccents], which covers the accented letters the Latin
+  /// layouts need. Pass your own map to change or extend it, or an empty map
+  /// to turn the popup off. Uppercase forms are derived when shift is on, so
+  /// the map only holds lowercase keys.
+  final Map<String, List<String>>? accents;
+
   /// When true, hides the keyboard with animation when no text field is focused.
   final bool hideWhenUnfocused;
 
@@ -407,6 +418,9 @@ class _VirtualKeypadState extends State<VirtualKeypad> {
   bool _wasVisible = false;
   bool? _reportedVisibility;
   bool _languagePickerVisible = false;
+
+  /// Whether the accent popup is open, so a second long press cannot stack.
+  bool _accentPickerVisible = false;
 
   // Standalone mode state
   StandaloneInputControl? _inputControl;
@@ -750,6 +764,67 @@ class _VirtualKeypadState extends State<VirtualKeypad> {
     if (currentLanguage != targetLanguage) {
       provider.setLanguage(targetLanguage, userInitiated: false);
     }
+  }
+
+  /// The alternates for [character], cased to match the keyboard right now.
+  List<String> _accentsFor(String character) {
+    final table = widget.accents ?? kLatinAccents;
+    final options = table[character.toLowerCase()];
+    if (options == null || options.isEmpty) return const [];
+    final upper = _shift || _capsLock;
+    return upper
+        ? [
+            for (final o in options) o.toUpperCase(),
+          ]
+        : options;
+  }
+
+  /// Shows the alternates for a held key and inserts whichever is chosen.
+  Future<void> _showAccentPicker(String character, Offset at) async {
+    final options = _accentsFor(character);
+    if (options.isEmpty || _accentPickerVisible) return;
+    setState(() => _accentPickerVisible = true);
+    final overlayBox =
+        Overlay.of(context).context.findRenderObject() as RenderBox;
+    try {
+      final chosen = await showMenu<String>(
+        context: context,
+        position: RelativeRect.fromLTRB(
+          at.dx,
+          at.dy,
+          overlayBox.size.width - at.dx,
+          overlayBox.size.height - at.dy,
+        ),
+        items: [
+          for (final option in options)
+            PopupMenuItem<String>(
+              value: option,
+              child: Text(
+                option,
+                style: TextStyle(fontSize: widget.theme.keyTextSize),
+              ),
+            ),
+        ],
+      );
+      if (chosen != null) _insertAccent(chosen);
+    } finally {
+      if (mounted) setState(() => _accentPickerVisible = false);
+    }
+  }
+
+  /// Inserts a chosen accent and reports it like any other character.
+  ///
+  /// The text is already cased, so it is inserted as it stands rather than
+  /// going back through the shift handling that produced it.
+  void _insertAccent(String text) {
+    _playKeyFeedback();
+    _insertTextIntoTarget(text);
+    if (_shift && !_capsLock) {
+      setState(() => _shift = false);
+    }
+    final key = VirtualKey.character(text: text);
+    widget.onKeyPressed?.call(key);
+    widget.onKeyPressedWithText?.call(key, text);
   }
 
   Future<void> _showLanguagePicker(Offset globalPosition) async {
@@ -1227,6 +1302,8 @@ class _VirtualKeypadState extends State<VirtualKeypad> {
                       KeyboardLayoutProvider.instance.currentLanguageCode,
                   canOpenLanguagePicker: _canSwitchLanguages,
                   onSpaceLongPress: _showLanguagePicker,
+                  onCharacterLongPress: _showAccentPicker,
+                  hasAccents: (c) => _accentsFor(c).isNotEmpty,
                   onPressed: _onKeyPressed,
                   keyBuilder: widget.keyBuilder,
                 );
@@ -1693,6 +1770,8 @@ class _KeyWidget extends StatefulWidget {
     required this.languageCode,
     required this.canOpenLanguagePicker,
     required this.onSpaceLongPress,
+    required this.onCharacterLongPress,
+    required this.hasAccents,
     required this.onPressed,
     required this.keyBuilder,
     this.isDpadFocused = false,
@@ -1713,6 +1792,12 @@ class _KeyWidget extends StatefulWidget {
   final String languageCode;
   final bool canOpenLanguagePicker;
   final ValueChanged<Offset> onSpaceLongPress;
+
+  /// Opens the accent popup for a held character key.
+  final void Function(String character, Offset at) onCharacterLongPress;
+
+  /// Whether a character has alternates worth showing.
+  final bool Function(String character) hasAccents;
   final void Function(VirtualKey) onPressed;
   final VirtualKeypadKeyBuilder? keyBuilder;
 
@@ -1819,6 +1904,15 @@ class _KeyWidgetState extends State<_KeyWidget> {
   void _handleLongPressStart(LongPressStartDetails details) {
     if (widget.virtualKey.action == KeyAction.backSpace) {
       _startRepeat();
+      return;
+    }
+
+    // A held letter offers its accents, which is where every mobile keyboard
+    // keeps them. Space keeps the language picker it already had.
+    final key = widget.virtualKey;
+    final text = key.text;
+    if (key.isCharacter && text != null && widget.hasAccents(text)) {
+      widget.onCharacterLongPress(text, details.globalPosition);
       return;
     }
 

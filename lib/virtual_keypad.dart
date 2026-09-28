@@ -77,4 +77,5 @@ export 'src/theme.dart';
 export 'src/widgets/keyboard.dart';
 export 'src/widgets/floating_keyboard.dart';
 export 'src/widgets/text_field.dart';
+export 'src/layouts/accents.dart';
 export 'src/layouts/layouts.dart';
