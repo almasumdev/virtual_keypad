@@ -102,6 +102,7 @@ class VirtualKeypad extends StatefulWidget {
     this.animationDuration = const Duration(milliseconds: 200),
     this.animationCurve = Curves.easeInOut,
     this.keyBuilder,
+    this.showNumberRow = false,
     this.keyShuffle = KeyShuffle.none,
     this.shuffleTrigger,
   })  : assert(
@@ -267,6 +268,19 @@ class VirtualKeypad extends StatefulWidget {
   ///
   /// Defaults to false, which leaves touch and pointer behaviour untouched.
   final bool enableDpadNavigation;
+
+  /// Whether to put a row of digits above the letters.
+  ///
+  /// A phone keyboard hides the digits behind its symbols page, which costs
+  /// two taps for every number. A tablet or a desktop has the room to show
+  /// them, and a form full of quantities or codes is much faster with them
+  /// out. The row is `1` through `0`, and it is added only to the letter page:
+  /// the symbols and accent pages carry their own digits already, and a
+  /// numeric keypad is all digits to begin with.
+  ///
+  /// Defaults to false, which leaves the layouts as their language defines
+  /// them.
+  final bool showNumberRow;
 
   /// The alternates offered when a character key is held down, keyed by the
   /// lowercase base letter.
@@ -904,9 +918,61 @@ class _VirtualKeypadState extends State<VirtualKeypad> {
     final layoutSet = KeyboardLayoutProvider.instance.getLayouts(inputType);
 
     return _applyShuffle(
-      _decorateLayoutWithEmojiToggle(_getLayoutForStage(layoutSet)),
+      _decorateLayoutWithNumberRow(
+        _decorateLayoutWithEmojiToggle(_getLayoutForStage(layoutSet)),
+      ),
     );
   }
+
+  /// Whether a digit row belongs above this layout.
+  ///
+  /// Only the letter page gets one. The symbols and accent pages carry digits
+  /// of their own, a numeric or phone keypad is already all digits, and the
+  /// emoji picker is not a layout the user types letters on.
+  bool get _wantsNumberRow {
+    if (!widget.showNumberRow) return false;
+    if (_layoutStage != LayoutStage.primary) return false;
+    switch (_effectiveKeyboardType) {
+      case KeyboardType.text:
+      case KeyboardType.multiline:
+      case KeyboardType.emailAddress:
+      case KeyboardType.url:
+      case KeyboardType.visiblePassword:
+      case KeyboardType.name:
+      case KeyboardType.streetAddress:
+        return true;
+      case KeyboardType.number:
+      case KeyboardType.numberSigned:
+      case KeyboardType.numberDecimal:
+      case KeyboardType.phone:
+      case KeyboardType.datetime:
+      case KeyboardType.none:
+      case KeyboardType.custom:
+        return false;
+    }
+  }
+
+  /// Puts `1` through `0` above [layout] when [VirtualKeypad.showNumberRow]
+  /// asks for it.
+  KeyboardLayout _decorateLayoutWithNumberRow(KeyboardLayout layout) {
+    if (!_wantsNumberRow || layout.isEmpty) return layout;
+    // A layout that already opens with ten digits needs nothing added, which
+    // keeps a custom layout from growing a second row on every build.
+    final first = layout.first;
+    if (first.length == 10 &&
+        first.every((key) => key.isCharacter && _digits.contains(key.text))) {
+      return layout;
+    }
+    return [
+      [for (final digit in _digits) VirtualKey.character(text: digit)],
+      ...layout,
+    ];
+  }
+
+  /// The digits of the number row, in the order a keyboard shows them.
+  static const List<String> _digits = [
+    '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', //
+  ];
 
   /// Applies [VirtualKeypad.keyShuffle] to [layout].
   ///

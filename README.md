@@ -122,6 +122,7 @@ Expand a group for the full list:
 - Fully custom layouts for PIN pads, OTP entry, checkout, ATM, and POS screens
 - Layout adapts automatically to the focused field's `keyboardType`
 - Symbols and secondary or tertiary pages per language
+- A digit row above the letters with `showNumberRow: true`
 
 </details>
 
@@ -434,6 +435,23 @@ VirtualKeypadTextField(
 | `phone` | Phone dialer |
 | `multiline` | Text areas with a newline key |
 | `custom` | Your own layout |
+
+### A digit row above the letters
+
+A phone keyboard keeps the digits behind its symbols page, which costs two taps
+for every number. On a tablet, a desktop, or any form full of quantities and
+codes there is room to leave them out:
+
+```dart
+VirtualKeypad(
+  type: KeyboardType.text,
+  showNumberRow: true,
+)
+```
+
+The row is `1` through `0` and it goes on the letter page only. The symbols and
+accent pages already carry digits, and a numeric or phone keypad is all digits
+to begin with, so none of those change.
 
 ### Build a PIN pad or numeric keypad
 

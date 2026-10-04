@@ -1,3 +1,30 @@
+## 1.10.0
+
+The digits can sit above the letters instead of behind the symbols page.
+
+### New
+
+- **`showNumberRow: true` puts `1` through `0` above the letters.** A phone
+  keyboard hides the digits one page away, which costs two taps for every
+  number. A tablet, a desktop, or a form full of quantities and codes has the
+  room to leave them out:
+
+  ```dart
+  VirtualKeypad(
+    type: KeyboardType.text,
+    showNumberRow: true,
+  )
+  ```
+
+  The row is added to the letter page only. The symbols and accent pages carry
+  digits of their own, and a numeric or phone keypad is all digits to begin
+  with, so none of those change. It works on every built-in language, since the
+  row is added above whatever layout the language defines.
+
+### Notes
+
+Defaults to false, so nothing changes for an existing keypad.
+
 ## 1.9.0
 
 Accents move to where people expect them: a long press.
