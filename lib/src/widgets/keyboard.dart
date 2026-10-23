@@ -786,12 +786,27 @@ class _VirtualKeypadState extends State<VirtualKeypad> {
     final options = table[character.toLowerCase()];
     if (options == null || options.isEmpty) return const [];
     final upper = _shift || _capsLock;
-    return upper
-        ? [
-            for (final o in options) o.toUpperCase(),
-          ]
-        : options;
+    if (!upper) return options;
+    // A plain toUpperCase gets two of these wrong. `ß` has no uppercase in
+    // that mapping and stayed lowercase in an uppercase menu, and Turkish `ı`
+    // becomes `I`, which is just the key being held; what a Turkish writer
+    // needs on that key is the dotted capital `İ`. Anything that would only
+    // repeat the held key, or an earlier option, is left out.
+    final held = character.toUpperCase();
+    final seen = <String>{};
+    return [
+      for (final o in options)
+        if (_accentUppercase[o] ?? o.toUpperCase() case final u
+            when u != held && seen.add(u))
+          u,
+    ];
   }
+
+  /// Uppercase forms that `String.toUpperCase` does not give for an accent.
+  static const Map<String, String> _accentUppercase = {
+    'ß': 'ẞ',
+    'ı': 'İ',
+  };
 
   /// Shows the alternates for a held key and inserts whichever is chosen.
   Future<void> _showAccentPicker(String character, Offset at) async {

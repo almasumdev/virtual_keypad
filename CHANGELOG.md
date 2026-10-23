@@ -1,3 +1,15 @@
+## 1.10.1
+
+### Fixed
+
+- **Two letters in the uppercase accent menu were wrong.** With shift or caps
+  lock on, the alternates are the uppercase forms of the lowercase ones, but a
+  plain uppercase conversion gets two of them wrong. `ß` stayed lowercase, so
+  holding `S` offered a lowercase letter; it now offers the capital `ẞ`. And
+  Turkish `ı` became `I`, the very key being held, so the menu repeated it and
+  Turkish writers never got the dotted capital `İ` they need; that key now
+  offers `İ`. An alternate that only repeats the held key is no longer shown.
+
 ## 1.10.0
 
 The digits can sit above the letters instead of behind the symbols page.

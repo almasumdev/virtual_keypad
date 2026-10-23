@@ -91,6 +91,46 @@ void main() {
       expect(typed, ['À']);
     });
 
+    testWidgets('with shift on, ß is offered as the capital ẞ', (
+      tester,
+    ) async {
+      // toUpperCase leaves ß as it is, so the uppercase menu used to offer a
+      // lowercase letter.
+      final typed = await _pump(tester);
+      await tester.tap(find.byIcon(Icons.arrow_upward_outlined));
+      await tester.pumpAndSettle();
+      await _hold(tester, 'S');
+      expect(find.text('ẞ'), findsOneWidget);
+      expect(find.text('ß'), findsNothing);
+      await tester.tap(find.text('ẞ'));
+      await tester.pumpAndSettle();
+      expect(typed, ['ẞ']);
+    });
+
+    testWidgets('with shift on, the I key offers Turkish dotted İ', (
+      tester,
+    ) async {
+      // Dotless ı uppercases to I, the key itself, which was useless; the
+      // capital a Turkish writer needs there is İ.
+      await _pump(tester);
+      await tester.tap(find.byIcon(Icons.arrow_upward_outlined));
+      await tester.pumpAndSettle();
+      await _hold(tester, 'I');
+      expect(find.text('İ'), findsOneWidget);
+      // Only the key itself shows I; the menu does not repeat it.
+      expect(find.text('I'), findsOneWidget);
+    });
+
+    testWidgets('lowercase alternates are unchanged', (tester) async {
+      await _pump(tester);
+      await _hold(tester, 's');
+      expect(find.text('ß'), findsOneWidget);
+      await tester.tapAt(const Offset(5, 5));
+      await tester.pumpAndSettle();
+      await _hold(tester, 'i');
+      expect(find.text('ı'), findsOneWidget);
+    });
+
     testWidgets('dismissing it inserts nothing', (tester) async {
       final typed = await _pump(tester);
       await _hold(tester, 'a');
