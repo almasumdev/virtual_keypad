@@ -1,3 +1,13 @@
+## 1.11.0
+
+### Added
+
+- **Long-press accents for more Latin alphabets.** The built-in table now offers
+  Hungarian `ő ű`, Romanian `ă ș ț`, Latvian and Lithuanian
+  `ā ē ī ū ė į ų ģ ķ ļ ņ`, and Icelandic `ð þ`. All of them follow shift into
+  their capitals. Existing letters keep their place in each row, and a table you
+  pass to `VirtualKeypad.accents` is used as before.
+
 ## 1.10.1
 
 ### Fixed

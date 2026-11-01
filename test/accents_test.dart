@@ -204,5 +204,83 @@ void main() {
         expect(options, isNot(contains(base)), reason: base);
       });
     });
+
+    test('it covers the Hungarian, Romanian, Baltic and Icelandic letters', () {
+      for (final entry in {
+        'a': 'āă',
+        'd': 'ð',
+        'e': 'ēė',
+        'g': 'ģ',
+        'i': 'īį',
+        'k': 'ķ',
+        'l': 'ļ',
+        'n': 'ņ',
+        'o': 'ő',
+        's': 'ș',
+        't': 'țþ',
+        'u': 'űūų',
+      }.entries) {
+        for (final letter in entry.value.split('')) {
+          expect(
+            kLatinAccents[entry.key],
+            contains(letter),
+            reason: '$letter is not offered on ${entry.key}',
+          );
+        }
+      }
+    });
+  });
+
+  group('Accent Casing', () {
+    Future<void> shiftOn(WidgetTester tester) async {
+      await tester.tap(find.byIcon(Icons.arrow_upward_outlined));
+      await tester.pumpAndSettle();
+    }
+
+    test('every letter has a capital the uppercase menu can offer', () {
+      // ß and ı are the two a plain toUpperCase gets wrong, and the keyboard
+      // maps those itself. Anything else that failed here would show a lowercase
+      // letter in an uppercase menu.
+      const handledByTheKeyboard = {'ß', 'ı'};
+      kLatinAccents.forEach((base, options) {
+        for (final option in options) {
+          if (handledByTheKeyboard.contains(option)) continue;
+          final upper = option.toUpperCase();
+          expect(upper.length, 1, reason: '$option has no single capital');
+          expect(upper, isNot(option), reason: '$option has no capital');
+          expect(upper, isNot(base.toUpperCase()), reason: option);
+        }
+      });
+    });
+
+    testWidgets('a capital from the new letters is what gets typed', (
+      tester,
+    ) async {
+      for (final entry in {'O': 'Ő', 'S': 'Ș', 'T': 'Þ', 'K': 'Ķ'}.entries) {
+        final typed = await _pump(tester);
+        await shiftOn(tester);
+        await _hold(tester, entry.key);
+        await tester.tap(find.text(entry.value));
+        await tester.pumpAndSettle();
+        expect(typed, [entry.value]);
+        await tester.pumpWidget(const SizedBox());
+      }
+    });
+
+    testWidgets('the longest row can still be reached and chosen', (
+      tester,
+    ) async {
+      // Ten options on one key, on a short screen: the menu has to scroll.
+      await tester.binding.setSurfaceSize(const Size(320, 480));
+      addTearDown(() => tester.binding.setSurfaceSize(null));
+      final typed = await _pump(tester);
+      await _hold(tester, 'a');
+      final last = find.text(kLatinAccents['a']!.last);
+      await tester.ensureVisible(last);
+      await tester.pumpAndSettle();
+      await tester.tap(last);
+      await tester.pumpAndSettle();
+      expect(typed, [kLatinAccents['a']!.last]);
+    });
   });
 }
