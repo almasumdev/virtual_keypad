@@ -1,6 +1,7 @@
 import 'dart:typed_data' show ByteData;
 
 import 'package:flutter/foundation.dart' show kIsWeb, visibleForTesting;
+// ignore: deprecated_member_use
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show FontLoader;
 
