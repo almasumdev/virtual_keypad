@@ -1149,11 +1149,15 @@ class _VirtualKeypadState extends State<VirtualKeypad> {
     if (maxLength == null) return false;
 
     final selection = controller.selection;
-    final selectedLength = selection.isValid && !selection.isCollapsed
-        ? (selection.end - selection.start).abs()
-        : 0;
-    final newLength = controller.text.length - selectedLength + text.length;
-    return newLength > maxLength;
+    final String newText;
+    if (selection.isValid && !selection.isCollapsed) {
+      newText =
+          controller.text.replaceRange(selection.start, selection.end, text);
+    } else {
+      final pos = controller.cursorPosition;
+      newText = controller.text.replaceRange(pos, pos, text);
+    }
+    return newText.characters.length > maxLength;
   }
 
   void _deleteBackwardFromTarget() {

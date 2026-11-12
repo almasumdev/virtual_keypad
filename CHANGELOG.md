@@ -1,3 +1,15 @@
+## 1.11.1
+
+### Fixed
+
+- **Backspace removed only half of an emoji.** Deleting after an emoji left a
+  broken character in the field, and Flutter showed a paint error. Backspace,
+  forward delete and the cursor keys now move over a whole emoji or accented
+  letter at a time, in both scope and standalone mode.
+- **`maxLength` counted an emoji as two characters.** A field with a limit of 3
+  holding `ab` refused an emoji that a normal `TextField` accepts. The limit now
+  counts visible characters, the same way `TextField` does.
+
 ## 1.11.0
 
 ### Added

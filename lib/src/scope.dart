@@ -162,15 +162,22 @@ class VirtualKeypadScopeState extends State<VirtualKeypadScope> {
       final selection = _getSelectionCallback?.call();
       if (selection != null) {
         final (start, end) = selection;
-        final newLength =
-            _activeController!.text.length - (end - start) + text.length;
-        if (maxLen != null && newLength > maxLen) return;
+        if (maxLen != null) {
+          final newText =
+              _activeController!.text.replaceRange(start, end, text);
+          if (newText.characters.length > maxLen) return;
+        }
         _activeController!.replaceRange(start, end, text);
         _clearSelectionCallback?.call();
         return;
       }
 
-      if (maxLen != null && _activeController!.text.length >= maxLen) return;
+      if (maxLen != null) {
+        final controller = _activeController!;
+        final pos = controller.cursorPosition;
+        final newText = controller.text.replaceRange(pos, pos, text);
+        if (newText.characters.length > maxLen) return;
+      }
       _activeController!.insertText(text);
     }
   }

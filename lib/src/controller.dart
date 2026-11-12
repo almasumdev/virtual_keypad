@@ -62,7 +62,8 @@ class VirtualKeypadController extends TextEditingController {
   /// Deletes the character before the cursor (backspace).
   ///
   /// If text is selected, deletes the entire selection.
-  /// Otherwise, deletes the character before the cursor.
+  /// Otherwise, deletes the whole visible character before the cursor, so an
+  /// emoji or a letter with combining accents goes in one press.
   /// Does nothing if the cursor is at position 0 and no selection.
   void deleteBackward() {
     final sel = selection;
@@ -75,9 +76,10 @@ class VirtualKeypadController extends TextEditingController {
 
     final pos = cursorPosition;
     if (pos > 0 && text.isNotEmpty) {
-      final before = text.substring(0, pos - 1);
+      final step = text.substring(0, pos).characters.last.length;
+      final before = text.substring(0, pos - step);
       final after = text.substring(pos);
-      final newCursorPos = pos - 1;
+      final newCursorPos = pos - step;
 
       value = TextEditingValue(
         text: before + after,
@@ -93,7 +95,8 @@ class VirtualKeypadController extends TextEditingController {
     final pos = cursorPosition;
     if (pos < text.length && text.isNotEmpty) {
       final before = text.substring(0, pos);
-      final after = text.substring(pos + 1);
+      final step = text.substring(pos).characters.first.length;
+      final after = text.substring(pos + step);
 
       value = TextEditingValue(
         text: before + after,
@@ -111,19 +114,21 @@ class VirtualKeypadController extends TextEditingController {
     );
   }
 
-  /// Moves the cursor one position to the left.
+  /// Moves the cursor one visible character to the left.
   void moveCursorLeft() {
     final pos = cursorPosition;
     if (pos > 0) {
-      selection = TextSelection.collapsed(offset: pos - 1);
+      final step = text.substring(0, pos).characters.last.length;
+      selection = TextSelection.collapsed(offset: pos - step);
     }
   }
 
-  /// Moves the cursor one position to the right.
+  /// Moves the cursor one visible character to the right.
   void moveCursorRight() {
     final pos = cursorPosition;
     if (pos < text.length) {
-      selection = TextSelection.collapsed(offset: pos + 1);
+      final step = text.substring(pos).characters.first.length;
+      selection = TextSelection.collapsed(offset: pos + step);
     }
   }
 

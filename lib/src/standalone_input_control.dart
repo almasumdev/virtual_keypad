@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:flutter/services.dart';
 import 'enums.dart';
 
@@ -90,7 +91,9 @@ class StandaloneInputControl with TextInputControl {
     final sel = _currentValue.selection;
 
     if (sel.isCollapsed && sel.start > 0) {
-      final start = sel.start - 1;
+      final step =
+          _currentValue.text.substring(0, sel.start).characters.last.length;
+      final start = sel.start - step;
       final newText = _currentValue.text.replaceRange(start, sel.end, '');
       _updateEditingValue(newText, start);
     } else if (!sel.isCollapsed) {
